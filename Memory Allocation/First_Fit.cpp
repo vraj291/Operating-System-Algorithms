@@ -14,6 +14,29 @@ struct Block{
     vector<int> pid;
 };
 
+void displayFragmentation(Process* processes,int processCount,Block* blocks,int blockCount){
+    int internal=0,external=0,i;
+    for(i=0;i<blockCount;i++){
+        if(blocks[i].left < blocks[i].size){
+            internal += blocks[i].left;
+        }
+    }
+    for(i=0;i<processCount;i++){
+        if(processes[i].blockid == -1){
+            for(i=0;i<blockCount;i++){
+                if(blocks[i].left == blocks[i].size){
+                    external += blocks[i].left;
+                }
+            }
+            if(external >= processes[i].size){
+                external = 0;
+            }
+        }
+    }
+    cout << "Total Internal Fragmentation : " << internal << "\n";
+    cout << "Total External Fragmentation : " << external << "\n";
+}
+
 void displayProcesses(Process* processes,int len){
     cout << "Process Table : \n\n";
     cout << "----------------------------------------------\n";
@@ -69,6 +92,12 @@ void displayBlocks(Block* blocks,int len){
     cout << "-----------------------------------------------------------------------\n\n";
 }
 
+void display(Process* processes,int processCount,Block* blocks,int blockCount){
+    displayProcesses(processes,processCount);
+    displayBlocks(blocks,blockCount);
+    displayFragmentation(processes,processCount,blocks,blockCount);
+}
+
 void firstFit(int* p,int p_len,int* b,int b_len){
 
     Process processes[p_len];
@@ -82,7 +111,7 @@ void firstFit(int* p,int p_len,int* b,int b_len){
     for(i=0;i<p_len;i++){
         temp = -1;
         for(j=0;j<b_len;j++){
-            if(blocks[j].left >= p[i]){
+            if(blocks[j].size >= p[i] && blocks[j].left == blocks[j].size){
                 temp = j+1;
                 blocks[j].left -= p[i];
                 blocks[j].pid.push_back(i+1);
@@ -92,8 +121,7 @@ void firstFit(int* p,int p_len,int* b,int b_len){
         processes[i] = {i+1,p[i],temp};
     }
 
-    displayProcesses(processes,p_len);
-    displayBlocks(blocks,b_len);
+    display(processes,p_len,blocks,b_len);
 }
 
 int main(){

@@ -19,6 +19,7 @@ class Queue{
         len = 0;
     }
 
+    // Create a new page entry
     Node* create(int i){
         Node* ptr = (Node*)malloc(sizeof(Node));;
         ptr->page = i;
@@ -26,14 +27,18 @@ class Queue{
         return ptr;
     }
 
+    // Add a new page entry
     void add(int i){
         Node* ptr = create(i);
         if(head == NULL){
             head = ptr;
             len++;
+            cout << "\n";
         }else{
             if(len == max_size){
                 _delete();
+            }else{
+                cout << "\n";
             }
             Node* temp = head;
             while(temp->next != NULL){
@@ -53,6 +58,7 @@ class Queue{
         cout << "\n";
     }
 
+    // Delete the first page entry
     void _delete(){
         Node* temp = head;
         if(len == 1){
@@ -66,9 +72,11 @@ class Queue{
             head = head->next;
             len--;
         }
+        cout << "Page " << temp->page << " was replaced.\n";
         free(temp);
     }
 
+    // Find an existing page entry
     bool find(int page){
         if(head == NULL) return false;
         Node* temp = head;
@@ -96,22 +104,25 @@ void FIFO(string refString,int frames){
             hits++;
         }else{
             pageFaults++;
-            cout << "Page Fault for " << refString.at(i) << "\n";
+            cout << "Page Fault for " << refString.at(i) << ". ";
             pages.add(int(refString.at(i))-48);
         }
     }
     cout << "\nNumber of page hits : " << hits << "\n";
-    cout << "Number of page faults : " << pageFaults << "\n";
+    cout << "Number of page faults : " << pageFaults << "\n\n";
+    cout << "Final allotment : \n";
+    pages.display();
 }
 
 int main(){
 
-    string refString = "1303563";
-    int frames = 3;
+    string refString = "70120304230323";
+    int frames = 4;
 
-    cout << "Given Reference String : " << refString << "\n\n";
+    cout << "Given Reference String : " << refString << "\n";
+    cout << "Number of Frames : " << frames << "\n\n";
 
     FIFO(refString,frames);
 
-    cout << "\n\n\t\t\t Prepared by : Vraj Parikh 19CE088";
+    cout << "\n\t\t\t Prepared by : Vraj Parikh 19CE088";
 }
